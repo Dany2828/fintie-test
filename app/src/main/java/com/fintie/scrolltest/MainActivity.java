@@ -35,19 +35,20 @@ public class MainActivity extends Activity {
         scroll.addView(root);
 
         TextView title = new TextView(this);
-        title.setText("Fintie Scroll Test v2");
+        title.setText("Fintie Scroll Test v4");
         title.setTextSize(28);
         title.setTextColor(Color.BLACK);
         root.addView(title);
 
         TextView explainer = new TextView(this);
         explainer.setText(
-                "v2 changes the motion model:\n" +
-                "• movement starts fast immediately and decelerates\n" +
-                "• each wheel event adds velocity instead of triggering a fixed swipe\n" +
-                "• repeated/faster scrolling should travel farther\n" +
-                "• Samsung's hidden reverse-scroll setting is compensated automatically\n\n" +
-                "This page now has enough content for TEST SMOOTH SWIPE to visibly move it."
+                "v4 keeps the v2 scroll feel and adds the missing gestures:\n" +
+                "• corrected vertical direction\n" +
+                "• smooth horizontal two-finger scrolling\n" +
+                "• pinch zoom (native pinch axis or Ctrl+wheel encoding)\n" +
+                "• primary click -> touchscreen tap\n" +
+                "• secondary/two-finger tap -> context/right click\n\n" +
+                "Still diagnostic: click-drag is not forwarded yet."
         );
         explainer.setTextSize(16);
         explainer.setPadding(0, dp(16), 0, dp(16));

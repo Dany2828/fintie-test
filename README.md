@@ -1,13 +1,17 @@
-# Fintie Scroll Test v2
+# Fintie Scroll Test v4
 
-Diagnostic Android project for the Fintie EB092 on Android 14+ / One UI.
+Diagnostic APK for the Fintie EB092 on Android 14+.
 
-v2 changes the synthetic scroll model from a fixed 170 ms swipe per wheel event to a velocity-driven continued touch gesture:
+## v4 adds
+- Immediate-then-decelerating vertical scrolling (same feel as v2)
+- Horizontal scrolling from `AXIS_HSCROLL`
+- Pinch zoom from `AXIS_GESTURE_PINCH_SCALE_FACTOR` or Ctrl+wheel-style firmware
+- Left click forwarding as a touchscreen tap
+- Secondary/right click forwarding; a Fintie two-finger tap should work when the firmware reports it as `BUTTON_SECONDARY`
+- Context-click accessibility action with long-press fallback
 
-- immediate fast response followed by deceleration
-- repeated wheel events accumulate velocity and distance
-- compensates for Samsung's `mouse_reverse_vertical_scrolling=1` setting
-- avoids status/UI broadcasts on ordinary cursor motion
-- includes a deliberately long scrollable test page
+## Build
+Push to GitHub and use **Actions -> Build test APK**, then download the `FintieScrollTest-debug` artifact.
 
-Build with the included GitHub Actions workflow, install the debug APK, enable the Accessibility Service, then use **TEST SMOOTH SWIPE** and **START MOUSE CAPTURE**.
+## Safety
+The accessibility service begins with mouse capture OFF. Use the touchscreen to press **STOP MOUSE CAPTURE** if any input behavior is undesirable.
