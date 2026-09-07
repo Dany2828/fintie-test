@@ -35,13 +35,20 @@ public class MainActivity extends Activity {
         scroll.addView(root);
 
         TextView title = new TextView(this);
-        title.setText("Fintie Scroll Test");
+        title.setText("Fintie Scroll Test v2");
         title.setTextSize(28);
         title.setTextColor(Color.BLACK);
         root.addView(title);
 
         TextView explainer = new TextView(this);
-        explainer.setText("1. Enable the Accessibility Service.\n2. Test synthetic swipe.\n3. Tap START MOUSE CAPTURE.\n\nIf the cursor stops moving, use your finger on the screen to tap STOP MOUSE CAPTURE. That result means Android consumes the whole mouse source, not only wheel events.");
+        explainer.setText(
+                "v2 changes the motion model:\n" +
+                "• movement starts fast immediately and decelerates\n" +
+                "• each wheel event adds velocity instead of triggering a fixed swipe\n" +
+                "• repeated/faster scrolling should travel farther\n" +
+                "• Samsung's hidden reverse-scroll setting is compensated automatically\n\n" +
+                "This page now has enough content for TEST SMOOTH SWIPE to visibly move it."
+        );
         explainer.setTextSize(16);
         explainer.setPadding(0, dp(16), 0, dp(16));
         root.addView(explainer);
@@ -60,10 +67,22 @@ public class MainActivity extends Activity {
         addButton(root, "START MOUSE CAPTURE", v -> sendCommand(FintieAccessibilityService.CMD_START));
         addButton(root, "STOP MOUSE CAPTURE", v -> sendCommand(FintieAccessibilityService.CMD_STOP));
 
-        TextView note = new TextView(this);
-        note.setText("Expected successful diagnostic:\n• wheel appears as ACTION_SCROLL / AXIS_VSCROLL\n• synthetic swipe visibly glides\n• we observe whether cursor/clicks survive mouse capture\n\nThis build does not auto-start, change Bluetooth settings, or run persistently.");
-        note.setPadding(0, dp(24), 0, 0);
-        root.addView(note);
+        TextView testHeading = new TextView(this);
+        testHeading.setText("\nScrollable test area");
+        testHeading.setTextSize(20);
+        testHeading.setTextColor(Color.BLACK);
+        root.addView(testHeading);
+
+        StringBuilder filler = new StringBuilder();
+        for (int i = 1; i <= 70; i++) {
+            filler.append("Scroll test line ").append(i)
+                    .append(" — use the Fintie or TEST SMOOTH SWIPE.\n\n");
+        }
+        TextView fillerView = new TextView(this);
+        fillerView.setText(filler.toString());
+        fillerView.setTextSize(16);
+        fillerView.setPadding(0, dp(12), 0, dp(40));
+        root.addView(fillerView);
 
         setContentView(scroll);
     }
@@ -91,7 +110,7 @@ public class MainActivity extends Activity {
     }
 
     private String buildDeviceSummary() {
-        StringBuilder b = new StringBuilder("Connected input devices:\n");
+        StringBuilder b = new StringBuilder("Connected Fintie devices:\n");
         for (int id : InputDevice.getDeviceIds()) {
             InputDevice d = InputDevice.getDevice(id);
             if (d != null && d.getName().toLowerCase().contains("fintie")) {
@@ -101,7 +120,11 @@ public class MainActivity extends Activity {
                         .append("\n");
             }
         }
-        b.append("\nService starts with mouse capture OFF.");
+        try {
+            int reverse = Settings.System.getInt(getContentResolver(), "mouse_reverse_vertical_scrolling", 0);
+            b.append("\nmouse_reverse_vertical_scrolling=").append(reverse);
+        } catch (Exception ignored) { }
+        b.append("\n\nService starts with mouse capture OFF.");
         return b.toString();
     }
 
@@ -109,10 +132,14 @@ public class MainActivity extends Activity {
         Button button = new Button(this);
         button.setText(text);
         button.setOnClickListener(listener);
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         p.setMargins(0, dp(6), 0, dp(6));
         root.addView(button, p);
     }
 
-    private int dp(int n) { return Math.round(n * getResources().getDisplayMetrics().density); }
+    private int dp(int n) {
+        return Math.round(n * getResources().getDisplayMetrics().density);
+    }
 }
