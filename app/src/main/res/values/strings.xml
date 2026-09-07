@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Fintie Scroll Test</string>
+    <string name="accessibility_description">Temporary diagnostic service for testing Fintie EB092 mouse-wheel capture and smooth swipe injection.</string>
+</resources>
